@@ -18,7 +18,7 @@ def main():
         dice_roll1 = random.randint(1, 6)
         dice_roll2 = random.randint(1, 6)
         print("You rolled {} and {}.".format(dice_roll1, dice_roll2))
-        
+
         decision = input("Do you want to move 1 piece or 2 pieces? (Type '1' or '2'): ")
         if decision.strip() == "1":
             piece_index = int(input("Choose a piece to move (0-3): "))
@@ -42,7 +42,7 @@ def main():
         else:
             print("Invalid input. Please enter '1' or '2'.")
             continue
-        
+
         socket.send_json(message)
         response = socket.recv_json()
         show_positions(client_id, response["positions"], response["heaven_pieces"])
