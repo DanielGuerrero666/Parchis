@@ -45,8 +45,15 @@ def main():
         
         socket.send_json(message)
         response = socket.recv_json()
-        print("Your new positions are: {}".format(response["positions"]))
+        show_positions(client_id, response["positions"])
         time.sleep(1)
+
+def show_positions(client_id, positions):
+    zone_names = ["Red", "Blue", "Green", "Yellow"]
+    for idx, pos in enumerate(positions):
+        zone_name = zone_names[idx // 4]
+        zone_position = pos % ZONE_SIZE
+        print("Player {}: Piece {} is now in {}:{}".format(client_id, idx, zone_name, zone_position))
 
 if __name__ == "__main__":
     main()
