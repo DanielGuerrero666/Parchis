@@ -18,14 +18,18 @@ def main():
         dice_roll1 = random.randint(1, 6)
         dice_roll2 = random.randint(1, 6)
         print("You rolled {} and {}.".format(dice_roll1, dice_roll2))
-        decision = input("Do you want to add the results? (Type 'yes' or 'no'): ")
-        if decision.strip().lower() == "yes":
-            message = {"action": "move", "client_id": client_id, "dice_roll1": dice_roll1, "dice_roll2": dice_roll2}
-            socket.send_json(message)
-            response = socket.recv_json()
-            print("Your new position is: {}".format(response["position"]))
-        else:
-            print("Skipped adding dice results.")
+        
+        piece_index = int(input("Choose a piece to move (0-3): "))
+        message = {
+            "action": "move",
+            "client_id": client_id,
+            "piece_index": piece_index,
+            "dice_roll1": dice_roll1,
+            "dice_roll2": dice_roll2
+        }
+        socket.send_json(message)
+        response = socket.recv_json()
+        print("Your new positions are: {}".format(response["positions"]))
         time.sleep(1)
 
 if __name__ == "__main__":

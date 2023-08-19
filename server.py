@@ -12,23 +12,27 @@ def main():
 
         if message["action"] == "register":
             client_id = message["client_id"]
-            players[client_id] = {"position": 0}
+            players[client_id] = {"positions": [0, 0, 0, 0]}
             socket.send_string("Registered successfully!")
 
         elif message["action"] == "move":
             client_id = message["client_id"]
             target_player = players.get(client_id)
             if target_player:
-                socket.send_string("Roll the dice. Type 'add' to add the results, or 'skip' to skip.")
-                response = socket.recv_string()
-                if response.strip().lower() == "add":
-                    dice_roll1 = message["dice_roll1"]
-                    dice_roll2 = message["dice_roll2"]
-                    total_roll = dice_roll1 + dice_roll2
-                    target_player["position"] += total_roll
+                piece_index = message["piece_index"]
+                if 0 <= piece_index < 4:
+                    socket.send_string("Roll the dice. Type 'add' to add the results, or 'skip' to skip.")
+                    response = socket.recv_string()
+                    if response.strip().lower() == "add":
+                        dice_roll1 = message["dice_roll1"]
+                        dice_roll2 = message["dice_roll2"]
+                        total_roll = dice_roll1 + dice_roll2
+                        target_player["positions"][piece_index] += total_roll
+                    else:
+                        socket.send_string("Skipped adding dice results.")
+                    socket.send_json({"positions": target_player["positions"]})
                 else:
-                    socket.send_string("Skipped adding dice results.")
-                socket.send_json({"position": target_player["position"]})
+                    socket.send_string("Invalid piece index.")
             else:
                 socket.send_string("Player {} not registered.".format(client_id))
 
