@@ -1,5 +1,6 @@
 import zmq
 import time
+import random
 
 def main():
     context = zmq.Context()
@@ -13,11 +14,12 @@ def main():
     print(response)
 
     while True:
-        move_data = input("Enter move data: ")
-        message = {"action": "move", "client_id": client_id, "move_data": move_data}
+        input("Press Enter to roll the dice...")
+        dice_roll = random.randint(1, 6)
+        message = {"action": "move", "client_id": client_id, "dice_roll": dice_roll}
         socket.send_json(message)
-        response = socket.recv_string()
-        print(response)
+        response = socket.recv_json()
+        print("You rolled a {}. Your new position is: {}".format(dice_roll, response["position"]))
         time.sleep(1)
 
 if __name__ == "__main__":

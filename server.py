@@ -5,25 +5,25 @@ def main():
     socket = context.socket(zmq.REP)
     socket.bind("tcp://*:5555")
 
-    clients = {}
+    players = {}
 
     while True:
         message = socket.recv_json()
 
         if message["action"] == "register":
             client_id = message["client_id"]
-            clients[client_id] = socket
+            players[client_id] = {"position": 0}
             socket.send_string("Registered successfully!")
 
         elif message["action"] == "move":
             client_id = message["client_id"]
-            target_client = clients.get(client_id)
-            if target_client:
-                move_data = message["move_data"]
-                target_client.send_json(move_data)
-                socket.send_string("Move sent to client {}".format(client_id))
+            target_player = players.get(client_id)
+            if target_player:
+                dice_roll = message["dice_roll"]
+                target_player["position"] += dice_roll
+                socket.send_json({"position": target_player["position"]})
             else:
-                socket.send_string("Client {} not registered.".format(client_id))
+                socket.send_string("Player {} not registered.".format(client_id))
 
         else:
             socket.send_string("Unknown action.")
