@@ -19,8 +19,10 @@ def main():
             client_id = message["client_id"]
             target_player = players.get(client_id)
             if target_player:
-                dice_roll = message["dice_roll"]
-                target_player["position"] += dice_roll
+                dice_roll1 = message["dice_roll1"]
+                dice_roll2 = message["dice_roll2"]
+                total_roll = dice_roll1 + dice_roll2
+                target_player["position"] += total_roll
                 socket.send_json({"position": target_player["position"]})
             else:
                 socket.send_string("Player {} not registered.".format(client_id))

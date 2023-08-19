@@ -15,11 +15,12 @@ def main():
 
     while True:
         input("Press Enter to roll the dice...")
-        dice_roll = random.randint(1, 6)
-        message = {"action": "move", "client_id": client_id, "dice_roll": dice_roll}
+        dice_roll1 = random.randint(1, 6)
+        dice_roll2 = random.randint(1, 6)
+        message = {"action": "move", "client_id": client_id, "dice_roll1": dice_roll1, "dice_roll2": dice_roll2}
         socket.send_json(message)
         response = socket.recv_json()
-        print("You rolled a {}. Your new position is: {}".format(dice_roll, response["position"]))
+        print("You rolled {} and {}. Your new position is: {}".format(dice_roll1, dice_roll2, response["position"]))
         time.sleep(1)
 
 if __name__ == "__main__":
