@@ -1,27 +1,24 @@
 import zmq
-import json
+import time
 
-context = zmq.Context()
+def main():
+    context = zmq.Context()
+    socket = context.socket(zmq.REQ)
+    socket.connect("tcp://localhost:5555")
 
-#  Socket to talk to server
-print("Conectando al servidor...")
-socket = context.socket(zmq.REQ)
-socket.connect("tcp://localhost:5555")
+    client_id = input("Enter your client ID: ")
+    message = {"action": "register", "client_id": client_id}
+    socket.send_json(message)
+    response = socket.recv_string()
+    print(response)
 
-# Datos del usuario
-playing = True
-name = "Test_Player"
+    while True:
+        move_data = input("Enter move data: ")
+        message = {"action": "move", "client_id": client_id, "move_data": move_data}
+        socket.send_json(message)
+        response = socket.recv_string()
+        print(response)
+        time.sleep(1)
 
-while playing:
-    print("Bienvenido jugador" '\n')
-    name = input("Por favor ingrese su nombre de usuario: ")
-    nameJson = json.dumps(name)
-    socket.send_json(nameJson)
-
-    message = socket.recv()
-    message = json.loads(message)
-    print(message)
-    playing = False
-
-    #Aqui es donde se tiene que estar mandando mensajes al servidor 
-    #Preguntando si ya esta listo el juego
+if __name__ == "__main__":
+    main()
