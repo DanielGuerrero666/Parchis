@@ -19,10 +19,15 @@ def main():
             client_id = message["client_id"]
             target_player = players.get(client_id)
             if target_player:
-                dice_roll1 = message["dice_roll1"]
-                dice_roll2 = message["dice_roll2"]
-                total_roll = dice_roll1 + dice_roll2
-                target_player["position"] += total_roll
+                socket.send_string("Roll the dice. Type 'add' to add the results, or 'skip' to skip.")
+                response = socket.recv_string()
+                if response.strip().lower() == "add":
+                    dice_roll1 = message["dice_roll1"]
+                    dice_roll2 = message["dice_roll2"]
+                    total_roll = dice_roll1 + dice_roll2
+                    target_player["position"] += total_roll
+                else:
+                    socket.send_string("Skipped adding dice results.")
                 socket.send_json({"position": target_player["position"]})
             else:
                 socket.send_string("Player {} not registered.".format(client_id))
