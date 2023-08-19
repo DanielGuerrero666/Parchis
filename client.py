@@ -45,15 +45,16 @@ def main():
         
         socket.send_json(message)
         response = socket.recv_json()
-        show_positions(client_id, response["positions"])
+        show_positions(client_id, response["positions"], response["heaven_pieces"])
         time.sleep(1)
 
-def show_positions(client_id, positions):
+def show_positions(client_id, positions, heaven_pieces):
     zone_names = ["Red", "Blue", "Green", "Yellow"]
     for idx, pos in enumerate(positions):
         zone_name = zone_names[idx // 4]
         zone_position = pos % ZONE_SIZE
-        print("Player {}: Piece {} is now in {}:{}".format(client_id, idx, zone_name, zone_position))
+        safe_zone_text = "Safe" if zone_position in SAFE_ZONE_POSITIONS else ""
+        print("Player {}: Piece {} is now in {}:{}{}, Heaven pieces: {}".format(client_id, idx, zone_name, safe_zone_text, zone_position, heaven_pieces))
 
 if __name__ == "__main__":
     main()
