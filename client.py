@@ -57,7 +57,7 @@ def main():
         else:
             print("Wait for your turn...")
 
-        time.sleep(1)  # Wait for a short period before sending another turn request
+        time.sleep(5)  # Tiempo de espera antes de consultar turno nuevamente
 
 def show_positions(client_id, positions, heaven_pieces):
     zone_names = ["Red", "Blue", "Green", "Yellow"]

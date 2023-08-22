@@ -39,9 +39,14 @@ def main():
                 piece_indices = message.get("piece_indices", [])
                 dice_roll1 = message["dice_roll1"]
                 dice_roll2 = message["dice_roll2"]
-
                 total_roll = dice_roll1 + dice_roll2
-                new_position = total_roll
+
+                if len(piece_indices) > 1:
+                    new_position = dice_roll1
+                    new_position2 = dice_roll2
+                else:
+                    new_position = total_roll
+
                 if target_player["last_even"]:
                     target_player["last_even"] = False
                     target_player["consecutive_even"] = 0
@@ -49,7 +54,7 @@ def main():
                 else:
                     new_position += target_player["positions"][piece_indices[0]]
                     if len(piece_indices) > 1:
-                        new_position += target_player["positions"][piece_indices[1]]
+                        new_position2 += target_player["positions"][piece_indices[1]]
 
                 if total_roll % 2 == 0:
                     target_player["consecutive_even"] += 1
@@ -62,7 +67,7 @@ def main():
                         new_position = check_safe_zone(new_position)
                         target_player["positions"][piece_indices[0]] = new_position
                         if len(piece_indices) > 1:
-                            target_player["positions"][piece_indices[1]] = new_position
+                            target_player["positions"][piece_indices[1]] = new_position2
                         socket.send_json({"positions": target_player["positions"], "heaven_pieces": target_player["heaven_pieces"]})
                     else:
                         target_player["last_even"] = True
@@ -71,7 +76,7 @@ def main():
                         new_position = check_safe_zone(new_position)
                         target_player["positions"][piece_indices[0]] = new_position
                         if len(piece_indices) > 1:
-                            target_player["positions"][piece_indices[1]] = new_position
+                            target_player["positions"][piece_indices[1]] = new_position2
                         socket.send_json({"positions": target_player["positions"], "heaven_pieces": target_player["heaven_pieces"]})
                 else:
                     target_player["consecutive_even"] = 0
@@ -81,7 +86,7 @@ def main():
                     new_position = check_safe_zone(new_position)
                     target_player["positions"][piece_indices[0]] = new_position
                     if len(piece_indices) > 1:
-                        target_player["positions"][piece_indices[1]] = new_position
+                        target_player["positions"][piece_indices[1]] = new_position2
                     if check_win(target_player["positions"]):
                         target_player["heaven_pieces"] += 1
                         target_player["positions"][piece_indices[0]] = -1
@@ -108,7 +113,6 @@ def check_zone(position):
     return position
 
 def check_safe_zone(position):
-    zone_index = position // ZONE_SIZE
     zone_position = position % ZONE_SIZE
     if zone_position in SAFE_ZONE_POSITIONS and zone_position != SAFE_ZONE_OFFSET:
         return position
