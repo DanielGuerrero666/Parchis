@@ -62,7 +62,8 @@ def main():
 def show_positions(client_id, positions, heaven_pieces):
     zone_names = ["Red", "Blue", "Green", "Yellow"]
     for idx, pos in enumerate(positions):
-        zone_name = zone_names[idx // 4]
+        zone_index = pos // ZONE_SIZE
+        zone_name = zone_names[zone_index]
         zone_position = pos % ZONE_SIZE
         safe_zone_text = "Safe" if zone_position in SAFE_ZONE_POSITIONS else ""
         print("Player {}: Piece {} is now in {}:{}{}, Heaven pieces: {}".format(client_id, idx, zone_name, safe_zone_text, zone_position, heaven_pieces))
