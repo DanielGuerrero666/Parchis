@@ -56,7 +56,7 @@ def main():
                     if len(piece_indices) > 1:
                         new_position2 += target_player["positions"][piece_indices[1]]
 
-                if total_roll % 2 == 0:
+                if dice_roll1 == dice_roll2:
                     target_player["consecutive_even"] += 1
                     if target_player["consecutive_even"] == MAX_CONSECUTIVE_EVEN:
                         max_position = max(new_position - total_roll, target_player["positions"][piece_indices[0]])
